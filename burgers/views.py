@@ -23,7 +23,6 @@ def show_ingredients(request):
     request.session.set_test_cookie()
 
     if request.method == 'POST':
-        print "post"
         postdata = request.POST.copy()
 
         # remove the ingredient from the cart

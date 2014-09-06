@@ -1,0 +1,27 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% extends "burgershop/base.html" %}
+{% load i18n %}
+
+{% block page_title %}<title>{% trans "Order your burger" %}</title>{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        {% include "burgers/jumbotron.html" %}
+
+        <div class="row">
+            <!-- ingredients -->
+            <div class="col-sm-6">
+                {% include "burgers/ingredients.html" %}
+            </div>
+
+            <!-- cart -->
+            <div class="col-sm-6">
+                {% include "cart/cart.html" %}
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+

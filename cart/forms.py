@@ -13,6 +13,7 @@ class ProductAddToCartForm(forms.ModelForm):
 
     class Meta:
         model = CartItem
+        fields = ['slug']
 
     # override the default __init__ so we can set the request
     def __init__(self, request=None, *args, **kwargs):
@@ -21,7 +22,7 @@ class ProductAddToCartForm(forms.ModelForm):
 
     # custom validation to check for cookies
     def clean(self):
-        cleaned_data = super(ProductAddToCartForm, self).clean()
+        self.cleaned_data = super(ProductAddToCartForm, self).clean()
         if self.request:
             if not self.request.session.test_cookie_worked():
                 raise forms.ValidationError(_("Cookies must be enabled."))

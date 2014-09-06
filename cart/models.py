@@ -12,6 +12,7 @@ class CartItem(models.Model):
     cart_id = models.CharField(max_length=50)
     date_added = models.DateTimeField(auto_now_add=True)
     ingredient = models.ForeignKey('burgers.Ingredient', unique=False)
+    slug = models.SlugField(blank=True)
 
     class Meta:
         db_table = 'cart_items'
@@ -28,10 +29,11 @@ class CartItem(models.Model):
     def price(self):
         return self.ingredient.price
 
-    @property
-    def slug(self):
-        return self.ingredient.slug
-
     def get_absolute_url(self):
         return self.ingredient.get_absolute_url()
+
+    def save(self, *args, **kwargs):
+        self.slug = self.ingredient.slug
+        super(CartItem, self).save(*args, **kwargs)
+
 

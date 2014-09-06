@@ -46,7 +46,7 @@ class Order(BaseOrderInfo) :
         ordering = ['-pk']
 
     def __unicode__(self):
-        return 'Order for ' + self.name + ' ' + self.surname + ' ' + self.time
+        return 'Order for ' + self.name + ' ' + self.surname + ' ' + str(self.time)
 
     @property
     def total(self):
