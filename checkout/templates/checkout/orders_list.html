@@ -1,0 +1,63 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% extends "burgershop/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="row">
+
+        <!-- orders list -->
+        <div class="col-sm-6 col-sm-offset-2">
+            <div class="panel panel-default" xmlns="http://www.w3.org/1999/html">
+                  <div class="panel-heading">{% trans "Orders" %}</div>
+                  <div class="panel-body">
+                        <p><i>{% trans "Select an order to make changes" %}</i></p>
+                  </div>
+
+                  <ul class="list-group">
+
+                    {% for order in orders_list %}
+                        <li class="list-group-item">
+                            <a href="{% url "order_details" order.pk %}" title="{{ order }}">
+                                {{ order }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                  </ul>
+            </div>
+        </div>
+
+        <!-- filters -->
+        <div class="col-sm-3">
+
+            <h3>{% trans "Filter by order status" %}</h3>
+
+            <select class="select" id="filter">
+                {% for value, status_option in status_list %}
+                    <option {% if status == value %}selected=selected{% endif %} value="{{ value }}">{{ status_option }}</option>
+                {% endfor %}
+                    <option {% if status == value %}selected=selected{% endif %} value="None">None</option>
+            </select>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+
+        /* shows orders filtered by status */
+        $( "#filter" ).change(function() {
+
+            var base_url = "{{ url }}" + "{% url "show_orders" %}";
+
+            if($(this).val() != "None"){
+                window.location =  base_url + $(this).val();
+            }
+            else {
+                window.location = base_url
+            }
+
+        });
+
+    </script>
+{% endblock %}
+

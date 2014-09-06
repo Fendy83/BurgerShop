@@ -1,0 +1,48 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% load i18n %}
+
+{% block extra_style %}
+    <!-- style for fancybox -->
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/jquery.fancybox-1.3.4.css"/><!--style-->
+{% endblock %}
+
+<div class="row">
+
+    {% for i in ingredients %}
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail height400" itemscope itemtype="http://schema.org/Product">
+
+                <!-- ingredient name -->
+                <h3 class="product-name" itemprop="name">{{ i.name }}</h3>
+
+                <!-- ingredient image -->
+                {% if i.image %}
+                    {% load thumbnail %}
+                    <a class="grouped_elements" href="{{ i.image.url }}">
+                        <img class="height200 thumbnail" src="{{ i.image.url }}" alt="ingredient image" itemprop="image" />
+                    </a>
+                {% endif %}
+
+                <!-- ingredient price -->
+                <p class="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                    <span itemprop="price">
+                        {% trans "Price" %}: € {{ i.price }}
+                    </span>
+                </p>
+
+                <!-- for adding the ingredient to the cart -->
+                <form class="form-inline" role="form" id="add-to-cart" method="post" action="">{% csrf_token %}
+                    <div class="form-group">
+                        {{ form.non_field_errors }}
+                        <div class="fieldWrapper">
+                            <input id="id_product_slug" name="product_slug" type="hidden" value="{{ i.slug }}">
+                        </div>
+                        <button type="submit" class="btn btn-default add" value="{% trans "Add" %}" name="submit" alt="{% trans "Add" %}">{% trans "Add" %}</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    {% endfor %}
+
+</div>

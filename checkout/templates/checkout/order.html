@@ -1,0 +1,52 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% extends "burgershop/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="checkout_form content">
+        <div id="checkout-box">
+
+            <!-- title: Checkout -->
+            <div class="row">
+                <div class="col-xs-12 col-md-8 col-md-offset-2">
+                    <h1 id="checkout-title" class="text-center title-style">{% trans "Checkout" %}</h1>
+                </div>
+            </div>
+
+            <!-- checkout form --->
+            <div class="row">
+
+                    <form role="form" action="" method="post" class="form_style" id="checkout-form" class="horizontal-form">
+                        {% csrf_token %}
+
+                        <div class="col-sm-6">
+                            {% include "checkout/user_info.html" %}
+
+                        </div>
+
+                        <div class="col-sm-6">
+                                {% include "checkout/delivery_info.html" %}
+
+                                {% include "checkout/order_summary.html" %}
+                        </div>
+
+                        <!-- submit -->
+                        <div class="col-md-6 col-md-offset-3 text-center">
+                            <button value="{%  trans "Pay on delivery" %}" type="submit" name="submit" class="pmargin20 btn btn-default text-center col-md-offset-1">{%  trans "Pay on delivery" %}</button>
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        /* adding class for bootstrap */
+        $('.control textarea').addClass("form-control");
+        $('#id_time_0').addClass("select col-md-5");
+        $('#id_time_1').addClass("select col-md-5");
+        $('.colsm5 label').addClass("col-sm-5 control-label");
+    </script>
+
+{% endblock %}

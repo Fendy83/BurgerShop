@@ -1,0 +1,54 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% extends "burgershop/base.html" %}
+{% load i18n %}
+
+{% block page_title %}<title>{% trans "Login" %}</title>{% endblock %}
+
+{% block content %}
+<div class="login_content content">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div id="login">
+
+                {% if form.errors %}
+                    <ul class="errorlist text-center">
+                        <li>{% trans "You entered an invalid username or password" %}.</li>
+                    </ul>
+                {% endif %}
+
+                <h1 id="login-title" class="text-center">{% trans "Login" %}</h1>
+
+                <form action="{% url 'login' %}" role="form" id="login_form" class="form_style" method="post">
+                    {% csrf_token %}
+
+                    <!--username -->
+                    <div class="form-group control">
+                        {{ form.username.errors }}
+                        <label for="id_username" class="col-lg-3 control-label">* {% trans "Username" %}:</label>
+                        <div class="col-lg-8 col-lg-offset-1">
+                            {{ form.username }}
+                        </div>
+                    </div>
+
+                    <!--password -->
+                    <div class="form-group control">
+                        {{ form.password.errors }}
+                        <label for="id_password" class="col-lg-3 control-label">* {% trans "Password" %}:</label>
+                        <div class="col-lg-8 col-lg-offset-1">
+                            {{ form.password }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-1 col-lg-offset-4">
+                            <button  value="{% trans "Login" %}" type="submit" name="submit" class="btn btn-default">{% trans "Login" %}</button>
+                        </div>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

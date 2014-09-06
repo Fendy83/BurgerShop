@@ -1,0 +1,46 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block page_title %}<title>Burger Shop</Title>{% endblock %}
+
+	<meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="author" content="Marina Gerace">
+    <meta name="description" content="Order your burger online, choose the ingredients, make the order and wait home for the delivery!">
+    <meta name="keywords" content="burger, shop online, ingredients, order, home delivery">
+
+    <link rel="icon" type="image/png" href="{{ MEDIA_URL }}css/img/burger.jpg"/>
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/normalize.css">
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/base.css">
+    {% block extra_style %}{% endblock %}
+</head>
+
+<body>
+
+	<div id="main">
+
+        {% include "burgershop/nav.html" %}
+
+		<div class="container-fluid">
+            <div id="main-content">
+                <!-- page content -->
+                {% block content %}{% endblock %}
+            </div>
+	    </div>
+	</div>
+
+    <script src="{{ MEDIA_URL }}js/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="{{ MEDIA_URL }}css/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+            $('.control input').addClass("form-control");
+    </script>
+
+   {% block extra_js %}{% endblock %}
+
+</body>
+</html>

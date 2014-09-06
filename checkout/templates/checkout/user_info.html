@@ -1,0 +1,58 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% load i18n %}
+
+<h2 id="info-contact" class="text-center subtitle-style">{%  trans "Contact Info" %}</h2>
+
+
+     {% block time %}
+         <div class="form-group control">
+            {{ form.time.errors }}
+            {{ form.time }}
+         </div>
+     {% endblock %}
+
+    <!-- name -->
+    <div class="form-group control">
+        {{ form.name.errors }}
+        <label for="id_name" class="col-md-2 col-md-offset-3 control-label">* {% trans "Name" %}:</label>
+        <div class="col-md-4">
+            {{ form.name }}
+        </div>
+    </div>
+
+    <!-- surname -->
+    <div class="form-group control">
+        {{ form.surname.errors }}
+        <label for="id_surname" class="col-md-2 col-md-offset-3 control-label">* {% trans "Surname" %}:</label>
+        <div class="col-md-4">
+            {{ form.surname }}
+        </div>
+    </div>
+
+    <!-- email -->
+    <div class="form-group control">
+        {{ form.email.errors }}
+        <label for="id_email" class="col-md-2 col-md-offset-3 control-label">* {% trans "Email" %}:</label>
+        <div class="col-md-4">
+            {{ form.email }}
+        </div>
+    </div>
+
+    <!-- phone -->
+    <div class="form-group control">
+        {{ form.phone.errors }}
+        <label for="id_phone" class="col-md-2 col-md-offset-3 control-label">* {% trans "Phone" %}:</label>
+        <div class="col-md-4">
+            {{ form.phone }}
+        </div>
+    </div>
+
+    <!-- comment -->
+    <div class="form-group control">
+        {{ form.comment.errors }}
+            <label for="id_comment" class="col-md-2 col-md-offset-3 control-label"> {% trans "Comment" %}:</label>
+            <div class="col-md-4">
+                    {{ form.comment }}
+            </div>
+    </div>
+

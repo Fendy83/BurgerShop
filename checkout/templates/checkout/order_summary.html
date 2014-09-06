@@ -1,0 +1,25 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% load i18n %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1 id="r-order" class="text-center subtitle-style">{%  trans "Order summary" %}</h1>
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+       <th class="text-center">{% trans "Cart subtotal" %}:</th>
+       <th><span> €  </span>{{ cart_subtotal|floatformat:"2" }}</th>
+    </tr>
+    <tr>
+        <th class="text-center">{% trans "Delivery cost" %}:</th>
+        <th><span> € </span>  {{ delivery_cost|floatformat:"2" }}</th>
+    </tr>
+    <tr>
+        <th class="text-center">{% trans "Total amount" %}:</th>
+        <th><span> € </span>  {{ total_amount|floatformat:"2" }}
+
+        </th>
+    </tr>
+</table>

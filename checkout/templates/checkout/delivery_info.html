@@ -1,0 +1,26 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% load i18n %}
+
+
+    <div class="form-group">
+        <h3 id="delivery_info_title" class="text-center col-md-12  subtitle-style">{%  trans "Delivery Info" %}</h3>
+    </div>
+
+    <!-- delivery address -->
+    <div class="form-group control">
+        {{ delivery_info.delivery_address_1.errors }}
+        <label for="id_delivery_address_1" class="col-md-2 col-md-offset-3 control-label">* {% trans "Delivery Address" %}:</label>
+        <div class="col-md-4">
+            {{ form.delivery_address }}
+        </div>
+    </div>
+
+    <!-- delivery zip -->
+    <div class="form-group control">
+        {{ delivery_info.delivery_zip.errors }}
+        <label for="id_delivery_zip" class="col-md-2 col-md-offset-3 control-label">* {% trans "Delivery Post Code" %}:</label>
+        <div class="col-md-4">
+            {{ form.delivery_zip }}
+        </div>
+    </div>
+

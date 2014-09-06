@@ -1,0 +1,73 @@
+<!-- Copyright © Marina Gerace. All rights reserved -->
+{% extends "burgershop/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="checkout_form content">
+        <div id="checkout-box">
+
+            <!-- order details subtitle -->
+            <div class="row">
+                <div class="col-xs-12 col-md-8 col-md-offset-2">
+                    <h1 id="checkout-title" class="text-center title-style">{% trans "Order details" %}</h1>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="">
+
+                    <form action="" method="post">{% csrf_token %}
+
+                        <div class="col-sm-6 col-sm-offset-3">
+
+                            <!-- order status -->
+                            <div class="form-group control">
+                                {{ form.status.errors }}
+                                <label for="id_status" class="col-md-2 col-md-offset-3 control-label">* {% trans "Status" %}:</label>
+                                <div class="col-md-4">
+                                    {{ form.status }}
+                                </div>
+                            </div>
+
+                            <!-- order total amount -->
+                            <div class="form-group control">
+                                {{ form.order_total_amount.errors }}
+                                <label for="id_order_total_amount" class="col-md-2 col-md-offset-3 control-label">* {% trans "Total  € " %}:</label>
+                                <div class="col-md-4">
+                                    {{ form.order_total_amount }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-6 col-sm-offset-3">
+                            {% include "checkout/order_user_info.html" %}
+                        </div>
+
+                        <div class="col-sm-6 col-sm-offset-3">
+                            {% include "checkout/delivery_info.html" %}
+                        </div>
+
+                        <!-- submit -->
+                        <div class="col-md-6 col-md-offset-3 text-center">
+                            <button value="{%  trans "Update" %}" type="submit" name="submit" class="pmargin20 btn btn-default text-center col-md-offset-1">{%  trans "Update" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+
+    <script type="text/javascript">
+
+        /* adding class for bootstrap */
+        $('.control textarea').addClass("form-control");
+        $('.form-group').addClass("bpadding40");
+        $('select').addClass("select").attr('id', 'filter');
+    </script>
+
+{% endblock %}

@@ -1,0 +1,136 @@
+html, body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+
+textarea {
+    height: 98px !important;
+}
+
+#main {
+   min-height: 100%;
+   position: relative;
+}
+
+.maxheight400 {
+    max-height: 400px;
+}
+
+.height400 {
+    height: 400px;
+}
+
+.height500 {
+    height: 500px;
+}
+
+.height200 {
+    height: 200px !important;
+}
+
+.minheight90 {
+    min-height: 90px;
+}
+
+.floatnone {
+    float: none !important;
+}
+
+.width150 {
+	width: 150px;
+}
+
+.height50 {
+	height: 50px;
+}
+
+.margintop20 {
+    margin-top: 20px;
+}
+
+.pmargin20 {
+    margin-bottom: 20px;
+}
+
+.bmargin50 {
+    margin-bottom: 50px;
+}
+
+.bpadding40 {
+    padding-bottom: 40px;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.errorlist {
+    width: 310px;
+    margin: auto auto 20px auto;
+}
+
+.errorlist li {
+    padding-bottom: 20px;
+}
+
+#filter {
+    width: 200px;
+}
+
+.select {
+    width: 66px;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+
+#add-to-cart div.form-group {
+    width: 300px;
+}
+
+#add-to-cart div.form-group p {
+    float: left;
+    width: 140px;
+}
+
+
+
+#checkout-form div.form-group {
+    width: 100%;
+    float: left;
+}
+
+/*----------------------------------------------*/
+/*----------------------------------------------*/
+/*  User Register */
+#sign-box label,
+#sign-box input,
+#sign-box button {
+    margin-bottom: 10px;
+}
+
+/*----------------------------------------------*/
+/*----------------------------------------------*/
+/*  Login */
+#login label,
+#login input,
+#login button {
+    margin-bottom: 10px;
+}
+
