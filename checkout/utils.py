@@ -20,13 +20,13 @@ def create_order(form, total_amount, delivery_cost, cart_subtotal):
 
 def create_order_list(request, order_instance) :
     """
-    For each ingredient in the cart, create an article in the order
+    For each burger in the cart, create an article in the order
     """
     cart_items = get_cart_items(request)
     for ci in cart_items:
         oi = OrderArticle()
         oi.order = order_instance
-        oi.ingredient = ci.ingredient
+        oi.burger = ci.burger
         oi.save()
 
     results = {'order_number': order_instance.id,'message':''}

@@ -2,26 +2,55 @@
 {% extends "burgershop/base.html" %}
 {% load i18n %}
 
-{% block page_title %}<title>{% trans "Order your burger" %}</title>{% endblock %}
-
 {% block content %}
-    <div class="container-fluid">
+    <div class="checkout_form content">
+        <div id="checkout-box">
 
-        {% include "burgers/jumbotron.html" %}
+            {% include "burgers/jumbotron.html" %}
 
-        <div class="row">
-            <!-- ingredients -->
-            <div class="col-sm-6">
-                {% include "burgers/ingredients.html" %}
+            <!-- title -->
+            <div class="row">
+                <div class="col-xs-12 col-md-8 col-md-offset-2">
+                    <h1 id="checkout-title" class="text-center title-style">{% trans "Choose a name for your burger" %}</h1>
+                </div>
             </div>
 
-            <!-- cart -->
-            <div class="col-sm-6">
-                {% include "cart/cart.html" %}
-            </div>
+            <div class="row">
 
+                <div class="">
+
+                    <form action="" method="post">{% csrf_token %}
+
+                        <div class="col-sm-6 col-sm-offset-3">
+
+                            <!-- burger name -->
+                            <div class="form-group control">
+                                {{ form.name.errors }}
+                                <label for="id_name" class="col-md-2 col-md-offset-3 control-label">* {% trans "Name" %}:</label>
+                                <div class="col-md-4">
+                                    {{ form.name }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- submit -->
+                        <div class="col-md-6 col-md-offset-3 text-center">
+                            <button value="{%  trans "Create" %}" type="submit" name="submit" class="pmargin20 btn btn-default text-center col-md-offset-1">{%  trans "Create" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
     </div>
 {% endblock %}
 
+{% block extra_js %}
+
+    <script type="text/javascript">
+
+        /* adding class for bootstrap */
+        $('.form-group').addClass("bpadding40");
+    </script>
+
+{% endblock %}

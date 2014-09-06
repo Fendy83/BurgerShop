@@ -39,3 +39,8 @@ class Burger(models.Model):
     def __unicode__(self):
         return self.name
 
+    def remove_ingredient(self, ingredient):
+        """remove an ingredient from the burger"""
+        i = Ingredient.objects.get(id=ingredient)
+        self.ingredients.remove(i)
+

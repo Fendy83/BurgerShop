@@ -31,6 +31,13 @@ class OrderUpdate(UpdateView):
         error_url = urlresolvers.reverse('success')
         return HttpResponseRedirect(error_url)
 
+    def get_context_data(self, **kwargs):
+        context = super(OrderUpdate, self).get_context_data(**kwargs)
+        context['burgers'] = self.object.orderarticle_set.all()
+        return context
+
+
+
 def order(request):
     """
     Shows to the user the checkout form and if he clicks on the 'Order' button,

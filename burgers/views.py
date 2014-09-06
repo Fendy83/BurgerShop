@@ -2,10 +2,24 @@
 #Copyright © Marina Gerace. All rights reserved
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from models import Ingredient
+from models import Ingredient, Burger
 from django.utils.translation import ugettext as _
 from cart.forms import ProductAddToCartForm
 from cart.utils import add_to_cart, get_cart_items, remove_from_cart, cart_subtotal
+from django.views.generic.edit import CreateView
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
+
+class BurgerCreate(CreateView):
+    template_name = "burgers/burger.html"
+    model = Burger
+    fields = ['name']
+    success_url = reverse_lazy('show_ingredients')
+
+    def form_valid(self, form):
+        #save burger name in session
+        self.request.session['burger'] = form.instance.name
+        return super(BurgerCreate, self).form_valid(form)
 
 def show_ingredients(request):
 
@@ -15,6 +29,13 @@ def show_ingredients(request):
 
     ingredients = Ingredient.objects.all()
     cart_items = get_cart_items(request)
+    burger_name = request.session.get('burger', '')
+    burgers = Burger.objects.filter(name=burger_name)
+    if burgers.count() > 0:
+        burger = burgers[0]
+    else:
+        initial_page = reverse('create_burger')
+        return HttpResponseRedirect(initial_page)
 
     #for adding the ingredient to the burger and show it in the cart
     form = ProductAddToCartForm(request=request)
@@ -25,11 +46,23 @@ def show_ingredients(request):
     if request.method == 'POST':
         postdata = request.POST.copy()
 
-        # remove the ingredient from the cart
+        # remove the burger from the cart
         if postdata['submit'] == _('Remove'):
             remove_from_cart(request)
 
-        # add the ingredient to the cart
+        # remove the ingredient from the burger
+        if postdata['submit'] == _('Delete'):
+            burger.remove_ingredient(postdata['ingredient'])
+
+        # update the specific burger
+        if postdata['submit'] == _('Update'):
+            request.session['burger'] = postdata['burger']
+            burger_name = postdata['burger']
+            burgers = Burger.objects.filter(name=burger_name)
+            if burgers.count() > 0:
+                burger = burgers[0]
+
+            # add the ingredient to the cart
         if postdata['submit'] == _("Add"):
             form = ProductAddToCartForm(request, postdata)
 
@@ -47,3 +80,5 @@ def show_ingredients(request):
     template_name="burgers/home.html"
 
     return render_to_response(template_name, locals(),context_instance=RequestContext(request))
+
+

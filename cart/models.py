@@ -11,7 +11,7 @@ class CartItem(models.Model):
 
     cart_id = models.CharField(max_length=50)
     date_added = models.DateTimeField(auto_now_add=True)
-    ingredient = models.ForeignKey('burgers.Ingredient', unique=False)
+    burger = models.ForeignKey('burgers.Burger')
     slug = models.SlugField(blank=True)
 
     class Meta:
@@ -19,21 +19,13 @@ class CartItem(models.Model):
         ordering = ['date_added']
 
     def __unicode__(self):
-        return self.ingredient.name
-
-    @property
-    def name(self):
-        return self.ingredient.slug
-
-    @property
-    def price(self):
-        return self.ingredient.price
+        return self.burger.name
 
     def get_absolute_url(self):
-        return self.ingredient.get_absolute_url()
+        return self.burger.get_absolute_url()
 
     def save(self, *args, **kwargs):
-        self.slug = self.ingredient.slug
+        self.slug = self.burger.slug
         super(CartItem, self).save(*args, **kwargs)
 
 

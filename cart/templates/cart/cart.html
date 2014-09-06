@@ -7,19 +7,41 @@
 {% for item in cart_items %}
 
  <div class="background-style">
-     <table class="table">
-        <tr>
-            <td class="item-name" colspan="1">
-                {{ item.name }}
-            </td>
-            <td>
+     <div class="row">
+            <div class="col-sm-6">
+                Burger {{ item.burger.name }}
+            </div>
+            <div class="col-sm-3">
                 <form role="form" method="post" action="" class="floatright form-horizontal cart">{% csrf_token %}
                     <input type="hidden" name="item_id" value="{{ item.id }}" class="form-control"/>
                     <button type="submit" value="{% trans "Remove" %}" name="submit" class="btn btn-default floatleft">{% trans "Remove" %}</button>{% csrf_token %}
                 </form>
-            </td>
-        </tr>
-     </table>
+            </div>
+            <div class="col-sm-3">
+                <form role="form" method="post" action="" class="floatright form-horizontal cart">{% csrf_token %}
+                    <input type="hidden" name="burger" value="{{ item.burger.name }}" class="form-control"/>
+                    <button type="submit" value="{% trans "Update" %}" name="submit" class="btn btn-default floatleft">{% trans "Update" %}</button>{% csrf_token %}
+                </form>
+            </div>
+
+
+     </div>
+     <div class="row bpadding40 margintop20">
+
+         {% for ingredient in item.burger.ingredients.all %}
+         <div class="col-sm-6 col-sm-offset-2">
+                <p>{{ ingredient.name }}</p>
+         </div>
+         {% if item.burger.name == burger_name %}
+             <div class="col-sm-4">
+                <form role="form" method="post" action="" class="floatright form-horizontal cart">{% csrf_token %}
+                    <input type="hidden" name="ingredient" value="{{ ingredient.id }}" class="form-control"/>
+                    <button type="submit" value="{% trans "Delete" %}" name="submit" class="btn btn-default floatleft">{% trans "Delete" %}</button>{% csrf_token %}
+                </form>
+             </div>
+         {% endif %}
+         {% endfor %}
+     </div>
 
  </div>
  {% endfor %}
@@ -32,7 +54,17 @@
  </table>
 
 {% if cart_items %}
-    <form method="get" action="{% url "order" %}" class="cart">{% csrf_token %}
-        <button value="{%  trans "On delivery" %}" type="submit" name="submit" class="btn btn-default delivery_option submit button">{%  trans "Order" %}</button>
-    </form>
+    <div class="row">
+        <div class="col-sm-6">
+            <form method="get" action="{% url "order" %}" class="cart">{% csrf_token %}
+                <button value="{%  trans "On delivery" %}" type="submit" name="submit" class="btn btn-default delivery_option submit button">{%  trans "Order" %}</button>
+            </form>
+        </div>
+        <div class="col-sm-6">
+            <form method="get" action="{% url "create_burger" %}" class="cart">{% csrf_token %}
+                <button value="{%  trans "New Burger" %}" type="submit" name="submit" class="btn btn-default delivery_option submit button">{%  trans "New Burger" %}</button>
+            </form>
+        </div>
+    </div>
+
 {% endif %}

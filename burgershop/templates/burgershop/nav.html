@@ -15,7 +15,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="menu">
             <ul class="nav navbar-nav" id="primary-links"><!-- Links Primari -->
-                <li><a href="{% url 'show_ingredients' %}" title="{% trans "Go to homepage" %}">{% trans "Home" %}</a></li>
+                <li><a href="{% url 'create_burger' %}" title="{% trans "Go to homepage" %}">{% trans "Home" %}</a></li>
                 {% if not request.user.is_authenticated %}
                     <li><a href="{% url 'login' %}" title="{% trans "Go to login" %}">{% trans "Login" %}</a></li>
                 {% else %}

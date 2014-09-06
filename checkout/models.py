@@ -3,7 +3,7 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from burgers.models import Ingredient
+from burgers.models import Burger
 import decimal
 
 order_status = [
@@ -64,17 +64,21 @@ class OrderArticle(models.Model):
     """
     Single product in the order (ingredient)
     """
-    ingredient = models.ForeignKey(Ingredient, verbose_name=_("ingredient"))
+    burger = models.ForeignKey(Burger, verbose_name=_("ingredient"))
     order = models.ForeignKey(Order)
 
     @property
     def price(self):
-        return self.ingredient.price
+        return self.burger.price
+
+    @property
+    def ingredients(self):
+        return self.burger.ingredients.all()
 
     @property
     def name(self):
-        return self.ingredient.name
+        return self.burger.name
 
     def __unicode__(self):
-        return self.ingredient.name
+        return self.burger.name
 

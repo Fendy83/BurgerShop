@@ -42,6 +42,18 @@
                         </div>
 
                         <div class="col-sm-6 col-sm-offset-3">
+                            <h1 class="text-center">{% trans "Burgers" %}:</h1>
+                            {% for burger in burgers %}
+                                <h3 class="text-center">{{ burger.name }}</h3>
+                                {% for ingredient in  burger.ingredients %}
+                                    <div class="row text-center">
+                                        <p>{{ ingredient.name }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-sm-6 col-sm-offset-3">
                             {% include "checkout/order_user_info.html" %}
                         </div>
 

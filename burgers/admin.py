@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #Copyright © Marina Gerace. All rights reserved
 from django.contrib import admin
-from models import Ingredient
+from models import Ingredient, Burger
 
 class IngredientAdmin(admin.ModelAdmin):
     """
@@ -18,3 +18,4 @@ class IngredientAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Ingredient, IngredientAdmin)
+admin.site.register(Burger)
