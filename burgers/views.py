@@ -35,7 +35,7 @@ class ShowIngredients(View):
         #for adding the ingredient to the burger and show it in the cart
         form = ProductAddToCartForm(request=request)
 
-        # set the test cookie on our first GET request
+        # set the test cookie
         request.session.set_test_cookie()
         # retrieve total amount of the order
         order_subtotal = cart.cart_subtotal(request)
@@ -52,12 +52,8 @@ class ShowIngredients(View):
         #for adding the ingredient to the burger and show it in the cart
         form = ProductAddToCartForm(request=request)
 
-        # set the test cookie on our first GET request
+        # set the test cookie
         request.session.set_test_cookie()
-
-        # retrieve total amount of the order
-        order_subtotal = cart.cart_subtotal(request)
-        request.session['cart_subtotal'] = str(order_subtotal)
 
         postdata = request.POST.copy()
 
@@ -85,5 +81,9 @@ class ShowIngredients(View):
                 # if test cookie worked, get rid of it
                 if request.session.test_cookie_worked():
                     request.session.delete_test_cookie()
+
+        # retrieve total amount of the order
+        order_subtotal = cart.cart_subtotal(request)
+        request.session['cart_subtotal'] = str(order_subtotal)
 
         return render_to_response(self.template_name, locals(),context_instance=RequestContext(request))

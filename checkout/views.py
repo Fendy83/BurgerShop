@@ -7,8 +7,9 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django import forms
 from django.views.generic.edit import UpdateView
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View, CreateView
 from cart.models import Cart, CART_ID_SESSION_KEY
+from cart.utils import get_cart_for_checkout
 from forms import OrderForm
 import decimal, datetime
 from utils import create_order_list, create_order
@@ -30,7 +31,7 @@ class OrderUpdate(UpdateView):
         return HttpResponseRedirect(success_url)
 
     def form_invalid(self, form):
-        error_url = urlresolvers.reverse('success')
+        error_url = urlresolvers.reverse('error')
         return HttpResponseRedirect(error_url)
 
     def get_context_data(self, **kwargs):
@@ -38,54 +39,47 @@ class OrderUpdate(UpdateView):
         context['burgers'] = self.object.orderarticle_set.all()
         return context
 
-
-
-def order(request):
+class OrderCreate(CreateView):
     """
     Shows to the user the checkout form and if he clicks on the 'Order' button,
     creates the order
     """
-    #if cart is empty, return to homepage
-    cart = ''
-    cart_url = urlresolvers.reverse('show_ingredients')
-    cart_id = request.session.get(CART_ID_SESSION_KEY, '')
-    if not cart_id:
-        return HttpResponseRedirect(cart_url)
-
-    carts = Cart.objects.filter(cart_id=cart_id)
-    if carts.count() > 0:
-        cart = carts[0]
-        if cart.is_empty(request):
-            return HttpResponseRedirect(cart_url)
-
-
-    cart_subtotal = request.session.get('cart_subtotal','')
-    delivery_cost = request.session.get('delivery_cost','2.00')
-    total_amount = request.session.get('total_amount','')
-    if not total_amount:
-        total_amount = decimal.Decimal(delivery_cost) + decimal.Decimal(cart_subtotal)
-
-    if request.method == 'POST':
-        postdata = request.POST.copy()
-        form = OrderForm(postdata)
-        if form.is_valid():
-
-            # create order
-            order_instance = create_order(form, total_amount, delivery_cost, cart_subtotal)
-
-            #add order item in the order object
-            create_order_list(cart, request, order_instance)
-
-            # show the page for the order done
-            order_done_url = urlresolvers.reverse('order_done')
-            return HttpResponseRedirect(order_done_url)
-
-    else:
-        form = OrderForm()
-
     template_name='checkout/order.html'
+    success_url = urlresolvers.reverse_lazy('order_done')
+    model = Order
+    form_class = OrderForm
 
-    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(OrderCreate, self).get_context_data(**kwargs)
+        #if cart is empty, return to homepage
+        context['cart'] = get_cart_for_checkout(self.request)
+
+        context['cart_subtotal'] = self.request.session.get('cart_subtotal','')
+        context['delivery_cost'] = self.request.session.get('delivery_cost','2.00')
+        context['total_amount'] = self.request.session.get('total_amount','')
+
+        if context['total_amount'] == '':
+            context['total_amount'] = decimal.Decimal(context['delivery_cost']) + decimal.Decimal(context['cart_subtotal'])
+
+        return context
+
+    def form_valid(self, form):
+        cart = get_cart_for_checkout(self.request)
+        cart_subtotal = self.request.session.get('cart_subtotal','')
+        delivery_cost = self.request.session.get('delivery_cost','2.00')
+        total_amount = self.request.session.get('total_amount','')
+
+        if not total_amount:
+            total_amount = decimal.Decimal(delivery_cost) + decimal.Decimal(cart_subtotal)
+
+        # create order
+        order_instance = create_order(form, total_amount, delivery_cost, cart_subtotal)
+
+        #add order item in the order object
+        create_order_list(cart, self.request, order_instance)
+
+        return super(OrderCreate, self).form_valid(form)
+
 
 class OrderDone(TemplateView):
     """Shows a success message to the user and empty the cart"""

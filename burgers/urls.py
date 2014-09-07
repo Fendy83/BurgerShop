@@ -7,5 +7,4 @@ urlpatterns = patterns('burgers.views',
     #homepage
 	url(r'^$', BurgerCreate.as_view(), name = 'create_burger'),
 	url(r'^burger/', ShowIngredients.as_view(), name = 'show_ingredients'),
-	(r'^burger/', 'show_ingredients', {}, 'show_ingredients'),
 	)
