@@ -5,7 +5,7 @@ from django.template import RequestContext
 from models import Ingredient, Burger
 from django.utils.translation import ugettext as _
 from cart.forms import ProductAddToCartForm
-from cart.utils import add_to_cart, get_cart_items, remove_from_cart, cart_subtotal
+from cart.models import CartItem, Cart, CART_ID_SESSION_KEY
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
@@ -28,7 +28,6 @@ def show_ingredients(request):
     """
 
     ingredients = Ingredient.objects.all()
-    cart_items = get_cart_items(request)
     burger_name = request.session.get('burger', '')
     burgers = Burger.objects.filter(name=burger_name)
     if burgers.count() > 0:
@@ -36,6 +35,23 @@ def show_ingredients(request):
     else:
         initial_page = reverse('create_burger')
         return HttpResponseRedirect(initial_page)
+
+    cart_id = request.session.get(CART_ID_SESSION_KEY, '')
+
+    cart=''
+    if cart_id == '':
+        cart = Cart()
+        cart._cart_id(request)
+    else:
+        carts = Cart.objects.filter(cart_id=cart_id)
+        if carts.count() <= 0:
+            cart = Cart()
+            cart.cart_id = cart_id
+            cart.save()
+        else:
+            cart = carts[0]
+
+    cart_items = cart.get_cart_items(request)
 
     #for adding the ingredient to the burger and show it in the cart
     form = ProductAddToCartForm(request=request)
@@ -48,9 +64,10 @@ def show_ingredients(request):
 
         # remove the burger from the cart
         if postdata['submit'] == _('Remove'):
-            remove_from_cart(request)
+            cart.remove_from_cart(request)
+            burger_name = request.session.get('burger', '')
 
-        # remove the ingredient from the burger
+            # remove the ingredient from the burger
         if postdata['submit'] == _('Delete'):
             burger.remove_ingredient(postdata['ingredient'])
 
@@ -67,14 +84,17 @@ def show_ingredients(request):
             form = ProductAddToCartForm(request, postdata)
 
             if form.is_valid():
-                add_to_cart(request)
+                cart.add_to_cart(request)
 
                 # if test cookie worked, get rid of it
                 if request.session.test_cookie_worked():
                     request.session.delete_test_cookie()
 
     # retrieve total amount of the order
-    order_subtotal = cart_subtotal(request)
+    if cart:
+        order_subtotal = cart.cart_subtotal(request)
+    else:
+        order_subtotal = 0
     request.session['cart_subtotal'] = str(order_subtotal)
 
     template_name="burgers/home.html"

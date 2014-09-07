@@ -11,8 +11,8 @@ urlpatterns = patterns('checkout.views',
 	(r'^order_done/$', 'order_done', {}, 'order_done'),
 	(r'^orders/$', 'show_orders', {}, 'show_orders'),
     (r'^orders/(?P<status>[-\w]+)/$', 'show_orders',	{},'show_orders'),
-    (r'^success/', TemplateView.as_view(template_name="checkout/success.html")),
-    (r'^error/', TemplateView.as_view(template_name="checkout/error.html")),
+    url(r'^success/', TemplateView.as_view(template_name="checkout/success.html"), name='success'),
+    url(r'^error/', TemplateView.as_view(template_name="checkout/error.html"), name='error'),
 	)
 
 urlpatterns += patterns('',

@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django import forms
 from django.views.generic.edit import UpdateView
-from cart.utils import is_empty, empty_cart
+from cart.models import Cart, CART_ID_SESSION_KEY
 from forms import OrderForm
 import decimal, datetime
 from utils import create_order_list, create_order
@@ -44,9 +44,17 @@ def order(request):
     creates the order
     """
     #if cart is empty, return to homepage
-    if is_empty(request):
-        cart_url = urlresolvers.reverse('show_ingredients')
+    cart = ''
+    cart_url = urlresolvers.reverse('show_ingredients')
+    cart_id = request.session.get(CART_ID_SESSION_KEY, '')
+    if not cart_id:
         return HttpResponseRedirect(cart_url)
+
+    carts = Cart.objects.filter(cart_id=cart_id)
+    if carts.count() > 0:
+        cart = carts[0]
+        if cart.is_empty(request):
+            return HttpResponseRedirect(cart_url)
 
 
     cart_subtotal = request.session.get('cart_subtotal','')
@@ -64,7 +72,7 @@ def order(request):
             order_instance = create_order(form, total_amount, delivery_cost, cart_subtotal)
 
             #add order item in the order object
-            create_order_list(request, order_instance)
+            create_order_list(cart, request, order_instance)
 
             # show the page for the order done
             order_done_url = urlresolvers.reverse('order_done')
@@ -83,7 +91,19 @@ def order_done(request):
     """
 
     # empty the user cart
-    empty_cart(request)
+    cart_id = request.session.get(CART_ID_SESSION_KEY, '')
+    carts = Cart.objects.filter(cart_id=cart_id)
+    cart = ''
+    if carts.count() > 0:
+        cart = carts[0]
+    if cart.is_empty(request):
+        cart_url = urlresolvers.reverse('show_ingredients')
+        return HttpResponseRedirect(cart_url)
+
+    cart.empty_cart(request)
+    del request.session['burger']
+    del request.session[CART_ID_SESSION_KEY]
+
     template_name='checkout/order_done.html'
 
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
