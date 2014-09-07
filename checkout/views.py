@@ -7,12 +7,14 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django import forms
 from django.views.generic.edit import UpdateView
+from django.views.generic import TemplateView
 from cart.models import Cart, CART_ID_SESSION_KEY
 from forms import OrderForm
 import decimal, datetime
 from utils import create_order_list, create_order
 from models import Order, order_status
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class OrderUpdate(UpdateView):
@@ -85,47 +87,37 @@ def order(request):
 
     return render_to_response(template_name, locals(), context_instance=RequestContext(request))
 
-def order_done(request):
-    """
-    Shows a message to the user when the order is successfully completed
-    """
+class OrderDone(TemplateView):
+    """Shows a success message to the user and empty the cart"""
+    template_name = 'checkout/order_done.html'
 
-    # empty the user cart
-    cart_id = request.session.get(CART_ID_SESSION_KEY, '')
-    carts = Cart.objects.filter(cart_id=cart_id)
-    cart = ''
-    if carts.count() > 0:
-        cart = carts[0]
-    if cart.is_empty(request):
-        cart_url = urlresolvers.reverse('show_ingredients')
-        return HttpResponseRedirect(cart_url)
+    def get(self, request, *args, **kwargs):
+        # empty the user cart
+        cart_id = request.session.get(CART_ID_SESSION_KEY, '')
+        carts = Cart.objects.filter(cart_id=cart_id)
+        cart = ''
+        if carts.count() > 0:
+            cart = carts[0]
+            cart.empty_cart(request)
 
-    cart.empty_cart(request)
-    del request.session['burger']
-    del request.session[CART_ID_SESSION_KEY]
+        del request.session['burger']
+        del request.session[CART_ID_SESSION_KEY]
 
-    template_name='checkout/order_done.html'
+        return render_to_response(self.template_name, locals(), context_instance=RequestContext(request))
 
-    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
+class ShowOrders(TemplateView):
+    template_name = 'checkout/orders_list.html'
 
-@login_required
-def show_orders(request, status = None):
-    """
-    Shows the orders page for the administrator
-    """
+    @method_decorator(login_required)
+    def get(self, request, status = None):
+        #retrieve orders
+        if status:
+            orders_list = Order.objects.filter(status = status)
+        else:
+            orders_list = Order.objects.all()
 
-    #retrieve orders
-    if status:
-        orders_list = Order.objects.filter(status = status)
-    else:
-        orders_list = Order.objects.all()
+        #retrieve order status list
+        status_list = order_status
+        url = 'http://' + request.META['HTTP_HOST']
 
-    #retrieve order status list
-    status_list = order_status
-
-    url = 'http://' + request.META['HTTP_HOST']
-
-    template_name='checkout/orders_list.html'
-
-    return render_to_response(template_name, locals(), context_instance=RequestContext(request))
-
+        return render_to_response(self.template_name, locals(), context_instance=RequestContext(request))

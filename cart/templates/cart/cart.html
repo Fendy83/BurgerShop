@@ -32,7 +32,7 @@
          <div class="col-sm-6 col-sm-offset-2">
                 <p>{{ ingredient.name }}</p>
          </div>
-         {% if item.burger.name == burger_name %}
+         {% if item.burger.name == burger.name %}
              <div class="col-sm-4">
                 <form role="form" method="post" action="" class="floatright form-horizontal cart">{% csrf_token %}
                     <input type="hidden" name="ingredient" value="{{ ingredient.id }}" class="form-control"/>
