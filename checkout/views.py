@@ -23,7 +23,8 @@ class OrderUpdate(UpdateView):
     Shows single order to the administrator and allows him to modify the status
     """
     model = Order
-    fields = ['status', 'time', 'name', 'surname', 'email', 'phone', 'delivery_address', 'delivery_zip', 'comment', 'order_total_amount']
+    fields = ['status', 'time', 'name', 'surname', 'email', 'phone', 'delivery_address',
+              'delivery_zip', 'comment', 'order_total_amount']
 
     def form_valid(self, form):
         form.save()
@@ -52,7 +53,12 @@ class OrderCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super(OrderCreate, self).get_context_data(**kwargs)
         #if cart is empty, return to homepage
-        context['cart'] = get_cart_for_checkout(self.request)
+        cart = get_cart_for_checkout(self.request)
+        if cart.is_empty():
+            cart_url = urlresolvers.reverse('show_ingredients')
+            return HttpResponseRedirect(cart_url)
+        else:
+            context['cart'] = cart
 
         context['cart_subtotal'] = self.request.session.get('cart_subtotal','')
         context['delivery_cost'] = self.request.session.get('delivery_cost','2.00')
@@ -65,6 +71,10 @@ class OrderCreate(CreateView):
 
     def form_valid(self, form):
         cart = get_cart_for_checkout(self.request)
+        if cart.is_empty():
+            cart_url = urlresolvers.reverse('show_ingredients')
+            return HttpResponseRedirect(cart_url)
+
         cart_subtotal = self.request.session.get('cart_subtotal','')
         delivery_cost = self.request.session.get('delivery_cost','2.00')
         total_amount = self.request.session.get('total_amount','')
@@ -87,12 +97,8 @@ class OrderDone(TemplateView):
 
     def get(self, request, *args, **kwargs):
         # empty the user cart
-        cart_id = request.session.get(CART_ID_SESSION_KEY, '')
-        carts = Cart.objects.filter(cart_id=cart_id)
-        cart = ''
-        if carts.count() > 0:
-            cart = carts[0]
-            cart.empty_cart(request)
+        cart = get_cart_for_checkout(request)
+        cart.delete()
 
         del request.session['burger']
         del request.session[CART_ID_SESSION_KEY]

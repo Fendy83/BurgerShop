@@ -5,9 +5,7 @@ from models import Order
 import widget, fields
 
 class OrderForm(forms.ModelForm) :
-    """
-    form for the order
-    """
+    """form for the order"""
 
     time = fields.JqSplitTimeField(widget=widget.JqSplitTimeWidget(attrs={'time_class':'timepicker'}))
     phone = fields.PhoneField()

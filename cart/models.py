@@ -35,14 +35,6 @@ class Cart(models.Model):
             request.session[CART_ID_SESSION_KEY] = self.cart_id
         return request.session[CART_ID_SESSION_KEY]
 
-
-
-    def get_cart_items(self, request):
-        """
-        return all items from the current user's cart
-        """
-        return CartItem.objects.filter(cart_id=self._cart_id(request))
-
     def add_to_cart(self, request):
         """
         add an item to the cart
@@ -69,7 +61,7 @@ class Cart(models.Model):
                 burger.ingredients.add(i)
 
                 # get products in cart
-                cart_products = self.get_cart_items(request)
+                cart_products = self.cartitem_set.all()
                 product_in_cart = False
 
                 # check to see if item is already in cart
@@ -81,22 +73,20 @@ class Cart(models.Model):
                     # create and save a new cart item
                     ci = CartItem()
                     ci.burger = burger
-                    ci.cart_id = self._cart_id(request)
+                    ci.cart = self
                     ci.save()
 
 
-    def cart_item_count(self, request):
-        """
-        return number of items in the cart
-        """
-        return CartItem.objects.filter(cart_id=self._cart_id(request)).count()
+    def cart_item_count(self):
+        """return number of items in the cart"""
+        return self.cartitem_set.count()
 
 
     def get_single_item(self, request, item_id):
-        return get_object_or_404(CartItem, id=item_id, cart_id=self._cart_id(request))
+        return get_object_or_404(CartItem, id=item_id, cart=self)
 
-    # remove a single item from cart
     def remove_from_cart(self, request):
+        """remove a single item from cart"""
         postdata = request.POST.copy()
 
         if "item_id" in postdata:
@@ -106,7 +96,8 @@ class Cart(models.Model):
                 cart_item.delete()
                 cart_item.burger.delete()
 
-        if self.cart_item_count(request) == 0:
+        #if cart is not empty sets another burger as current burger
+        if self.cart_item_count() == 0:
             return HttpResponseRedirect(reverse(viewname='create_burger'))
         else:
             current_burger = CartItem.objects.all()[0]
@@ -115,21 +106,15 @@ class Cart(models.Model):
     # gets the total cost for the cart
     def cart_subtotal(self, request):
         cart_total = decimal.Decimal('0.00')
-        cart_products = self.get_cart_items(request)
+        cart_products = self.cartitem_set.all()
         for cart_item in cart_products:
             cart_total += decimal.Decimal(cart_item.burger.price)
             for ingredient in cart_item.burger.ingredients.all():
                 cart_total += decimal.Decimal(ingredient.price)
         return cart_total
 
-    def is_empty(self, request):
-        return self.cart_item_count(request) == 0
-
-    def empty_cart(self, request):
-        """Empty the cart"""
-        user_cart = self.get_cart_items(request)
-        user_cart.delete()
-
+    def is_empty(self):
+        return self.cart_item_count() == 0
 
 class CartItem(models.Model):
     """
@@ -137,7 +122,7 @@ class CartItem(models.Model):
     Every item is associated with an ingredient.
     """
 
-    cart_id = models.CharField(max_length=50)
+    cart = models.ForeignKey(Cart)
     date_added = models.DateTimeField(auto_now_add=True)
     burger = models.ForeignKey('burgers.Burger')
     slug = models.SlugField(blank=True)

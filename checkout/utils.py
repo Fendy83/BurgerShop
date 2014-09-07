@@ -18,7 +18,7 @@ def create_order(form, total_amount, delivery_cost, cart_subtotal):
 
 def create_order_list(cart, request, order_instance) :
     """For each burger in the cart, create an article in the order"""
-    cart_items = cart.get_cart_items(request)
+    cart_items = cart.cartitem_set.all()
     for ci in cart_items:
         oi = OrderArticle()
         oi.order = order_instance

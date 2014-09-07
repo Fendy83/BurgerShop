@@ -4,9 +4,7 @@ from django.contrib import admin
 from models import Order, OrderArticle
 
 class OrderArticleAdmin(admin.StackedInline) :
-    """
-    Single item in the order (ingredient)
-    """
+    """Single item in the order (ingredient)"""
     model = OrderArticle
     extra = 0
 
@@ -14,9 +12,7 @@ class OrderArticleAdmin(admin.StackedInline) :
         return "item"
 
 class OrderAdmin(admin.ModelAdmin) :
-    """
-    Delivery orders
-    """
+    """Delivery orders"""
 
     list_display = ('surname','time')
     list_display_links = ('surname', 'time')

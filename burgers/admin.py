@@ -4,9 +4,7 @@ from django.contrib import admin
 from models import Ingredient, Burger
 
 class IngredientAdmin(admin.ModelAdmin):
-    """
-    Ingredient admin class
-    """
+    """Ingredient admin class"""
     list_display = ('name', 'price')
     list_display_links = ('name','price')
     list_per_page = 50

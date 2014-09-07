@@ -12,6 +12,7 @@ from burgers.utils import get_current_burger
 from cart.utils import get_current_cart
 
 class BurgerCreate(CreateView):
+    """Creates a burger asking the burger name to the user"""
     template_name = "burgers/burger.html"
     model = Burger
     fields = ['name']
@@ -25,12 +26,13 @@ class BurgerCreate(CreateView):
 class ShowIngredients(View):
     """show burger ingredients and cart"""
     template_name="burgers/home.html"
+    ingredients = Ingredient.objects.all()
 
     def get(self, request):
-        ingredients = Ingredient.objects.all()
+        ingredients = self.ingredients
         burger = get_current_burger(request)
         cart = get_current_cart(request)
-        cart_items = cart.get_cart_items(request)
+        cart_items = cart.cartitem_set.all()
 
         #for adding the ingredient to the burger and show it in the cart
         form = ProductAddToCartForm(request=request)
@@ -44,10 +46,10 @@ class ShowIngredients(View):
         return render_to_response(self.template_name, locals(),context_instance=RequestContext(request))
 
     def post(self, request):
-        ingredients = Ingredient.objects.all()
+        ingredients = self.ingredients
         burger = get_current_burger(request)
         cart = get_current_cart(request)
-        cart_items = cart.get_cart_items(request)
+        cart_items = cart.cartitem_set.all()
 
         #for adding the ingredient to the burger and show it in the cart
         form = ProductAddToCartForm(request=request)
@@ -62,7 +64,7 @@ class ShowIngredients(View):
             cart.remove_from_cart(request)
             burger = get_current_burger(request)
 
-            # remove the ingredient from the burger
+        # remove the ingredient from the burger
         if postdata['submit'] == _('Delete'):
             burger.remove_ingredient(postdata['ingredient'])
 
